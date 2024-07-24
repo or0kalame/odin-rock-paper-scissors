@@ -13,80 +13,114 @@ function getComputerChoice() {
     return choice;
 }
 
-function getHumanChoice() {
-    let choice = prompt("Enter rock/paper/scissors:");
-    choice = choice.toLowerCase();
+function getHumanChoice(event) {
+    choice = event.target.id;
 
-    while (true) {
-        if (choice === 'paper' || choice === 'rock' || choice === 'scissors') {
-            return choice;
-        }
-        else {
-            alert("Incorrect Value!");
-            choice = prompt("Enter rock/paper/scissors:");
-            choice = choice.toLowerCase();
-        }
+    switch(choice) {
+        case 'rock':
+            return 'rock';
+        case 'paper':
+            return 'paper';
+        case 'scissors':
+            return 'scissors';
     }
 }
 
 function playRound(humanChoice, computerChoice) {
+    let result = document.getElementById("action");
+
     if (humanChoice === 'paper') {
         if (computerChoice === "rock") {
             humanScore++;
-            console.log(`You win! ${humanChoice} beats ${computerChoice}`)
+            result.textContent = `You win! ${humanChoice} beats ${computerChoice}`;
         }
         else if (computerChoice === "scissors") {
             computerScore++;
-            console.log(`You lose! ${computerChoice} beats ${humanChoice}`)
+            result.textContent = `You lose! ${computerChoice} beats ${humanChoice}`;
         } else {
-            console.log(`Tie! ${computerChoice} equals ${humanChoice}`)
+            result.textContent =`Tie! ${computerChoice} equals ${humanChoice}`;
         }
+
     } else if (humanChoice === 'rock') {
         if (computerChoice === "scissors") {
             humanScore++;
-            console.log(`You win! ${humanChoice} beats ${computerChoice}`)
+            result.textContent = `You win! ${humanChoice} beats ${computerChoice}`;
         }
         else if (computerChoice === "paper") {
             computerScore++;
-            console.log(`You lose! ${computerChoice} beats ${humanChoice}`)
+            result.textContent = `You lose! ${computerChoice} beats ${humanChoice}`
         } else {
-            console.log(`Tie! ${computerChoice} equals ${humanChoice}`)
+            result.textContent = `Tie! ${computerChoice} equals ${humanChoice}`
         }
+
     } else if (humanChoice === 'scissors') {
         if (computerChoice === "paper") {
             humanScore++;
-            console.log(`You win! ${humanChoice} beats ${computerChoice}`);
+            result.textContent = `You win! ${humanChoice} beats ${computerChoice}`;
         }
         else if (computerChoice === "rock") {
             computerScore++;
-            console.log(`You lose! ${computerChoice} beats ${humanChoice}`);
+            result.textContent = `You lose! ${computerChoice} beats ${humanChoice}`;
         } else {
-            console.log(`Tie! ${computerChoice} equals ${humanChoice}`);
+            result.textContent = `Tie! ${computerChoice} equals ${humanChoice}`;
         }
     }
 }
 
+function resetGame(winner) {
+    let body = document.querySelector('body');
+    let para = document.createElement('p');
+    let humanScoreText = document.getElementById('humanScore');
+    let computerScoreText = document.getElementById('computerScore');
+
+    if (winner == 'human') {
+        para.textContent = 'You win! Click \'Reset\' button to play again.';
+        body.appendChild(para);
+    } else {
+        para.textContent = 'You lose... Click \'Reset\' button to play again.';
+        body.appendChild(para);
+    }
+
+    let resetButton = document.createElement('button');
+    resetButton.textContent = 'Reset';
+    body.appendChild(resetButton);
+
+    resetButton.addEventListener('click', () => {
+        humanScore = 0;
+        computerScore = 0;
+        humanScoreText.textContent = '0';
+        computerScoreText.textContent = '0';
+
+        body.removeChild(para);
+        body.removeChild(resetButton);
+    });
+}
+
 function playGame() {
     let buttons = document.getElementById("buttons");
+    let humanScoreText = document.getElementById('humanScore');
+    let computerScoreText = document.getElementById('computerScore');
 
     buttons.addEventListener("click", (event) => {
-        humanChoice = event.target.id 
+        if (humanScore === 5) {
+            resetGame('human');
+            event.preventDefault();
+
+        } else if (computerScore === 5) {
+            resetGame('computer');
+            event.preventDefault();
+        }
+        
+        humanChoice = getHumanChoice(event);
         computerChoice = getComputerChoice();
 
-        switch (humanChoice) {
-            case "rock":
-                playRound("rock", computerChoice);
-                break;
-            case "paper":
-                playRound("paper", computerChoice);
-                break;
-            case "scissors":
-                playRound("scissors", computerChoice);
-                break;
-        }
+        playRound(humanChoice, computerChoice);
+        humanScoreText.textContent = humanScore.toString();
+        computerScoreText.textContent = computerScore.toString();
+
     })
 }
 
-let humanScore = 0;
-let computerScore = 0;
+humanScore = 0;
+computerScore = 0;
 playGame();
