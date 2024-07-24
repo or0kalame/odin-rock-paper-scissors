@@ -68,6 +68,10 @@ function playRound(humanChoice, computerChoice) {
 }
 
 function resetGame(winner) {
+    // If the resetButton exists, we skip the function.
+    if (document.getElementById('resetButton')) return;
+
+    // Creating the text and reset button
     let body = document.querySelector('body');
     let para = document.createElement('p');
     let humanScoreText = document.getElementById('humanScore');
@@ -82,6 +86,7 @@ function resetGame(winner) {
     }
 
     let resetButton = document.createElement('button');
+    resetButton.id = 'resetButton';
     resetButton.textContent = 'Reset';
     body.appendChild(resetButton);
 
@@ -104,19 +109,17 @@ function playGame() {
     buttons.addEventListener("click", (event) => {
         if (humanScore === 5) {
             resetGame('human');
-            event.preventDefault();
-
         } else if (computerScore === 5) {
             resetGame('computer');
-            event.preventDefault();
+        } else {
+            humanChoice = getHumanChoice(event);
+            computerChoice = getComputerChoice();
+
+            playRound(humanChoice, computerChoice);
+            humanScoreText.textContent = humanScore.toString();
+            computerScoreText.textContent = computerScore.toString();
         }
         
-        humanChoice = getHumanChoice(event);
-        computerChoice = getComputerChoice();
-
-        playRound(humanChoice, computerChoice);
-        humanScoreText.textContent = humanScore.toString();
-        computerScoreText.textContent = computerScore.toString();
 
     })
 }
